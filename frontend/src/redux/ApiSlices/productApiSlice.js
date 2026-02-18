@@ -1,0 +1,58 @@
+
+import { baseApiSlice } from './baseApiSlice';
+
+
+export const productsApiSlice = baseApiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+getProductsCategoryname: builder.query({
+        query: () => ({
+            url:'products/category'}),
+            
+        }),
+
+ 
+
+ 
+ createProduct: builder.mutation({
+      query: (datay) => ({
+        url: 'products/production',
+        method: 'POST',
+        body: datay,
+      }), 
+      invalidatesTags: ['Products'],
+    }),
+
+ }),
+
+
+});
+
+
+
+
+export const {useGetProductsCategorynameQuery,useCreateProductMutation}=productsApiSlice
+
+
+
+
+
+// getProducts: builder.query({
+//       query: ({ keyword, pageNumber }) => ({
+//         url:'products/category',
+//         params: { keyword, pageNumber },
+//       }),
+//       keepUnusedDataFor: 5,
+//       providesTags: ['Products'],
+//     }),
+
+
+
+
+
+
+
+
+
+
+
+   
