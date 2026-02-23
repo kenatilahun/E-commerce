@@ -1,6 +1,6 @@
 
 // for mapping over categories(frontend/src/components/catagoryItem.jsx)
-import {useGetProductsCategorynameQuery} from "../redux/ApiSlices/productApiSlice";
+import { useGetCategoriesQuery } from "../redux/ApiSlices/categoryApiSlice";
 import { useEffect } from "react";
 import { useState } from "react";
 // import CategoryItem from "../components/CategoryItem";
@@ -12,7 +12,8 @@ const CategorySidebar = () => {
 	  const HandleToggle=()=>{
 		setopen(!open); }
 		
-  const { data:categories = [] , isLoading} = useGetProductsCategorynameQuery();
+  const { data, isLoading } = useGetCategoriesQuery();
+  const categories = data?.categories || [];
 
   return ( 
 	<div >
