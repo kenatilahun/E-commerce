@@ -5,7 +5,7 @@ import { createApi, fetchBaseQuery,} from '@reduxjs/toolkit/query/react'
 // .injectEndpoints() is a powerful method in RTK Query for code splitting and
 //  modular API organization
 // It allows you to add endpoints to an existing API slice instead of defining all endpoints in one place. This is crucial for
-
+ 
 export const baseApiSlice=createApi({
     reducerPath:'myApi',
     

@@ -10,9 +10,22 @@ getProductsCategoryname: builder.query({
             
         }),
 
- 
 
- 
+getProducts: builder.query({
+      query: ({ keyword, pageNumber }) => ({
+        url:'products/category',
+        params: { keyword, pageNumber },
+      }),
+      providesTags: ['Products'],
+    }),
+
+    getProductById: builder.query({
+      query: (id) => ({ url: `products/${id}` }),
+    }),
+
+
+
+
  createProduct: builder.mutation({
       query: (datay) => ({
         url: 'products/production',
@@ -25,25 +38,15 @@ getProductsCategoryname: builder.query({
  }),
 
 
-});
 
-
-
-
-export const {useGetProductsCategorynameQuery,useCreateProductMutation}=productsApiSlice
+  });
+export const {useGetProductsCategorynameQuery,useCreateProductMutation,useGetProductsQuery,useGetProductByIdQuery}=productsApiSlice
 
 
 
 
 
-// getProducts: builder.query({
-//       query: ({ keyword, pageNumber }) => ({
-//         url:'products/category',
-//         params: { keyword, pageNumber },
-//       }),
-//       keepUnusedDataFor: 5,
-//       providesTags: ['Products'],
-//     }),
+
 
 
 

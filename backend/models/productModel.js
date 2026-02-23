@@ -8,22 +8,21 @@ const productSchema =new mongoose.Schema({
       trim: true,
     },
 
-    
-
     price: {
       type: Number,
       required: true,
     },
 
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
 
-    // image: {
-    //   type: String, // Cloudinary or local URL
-    //   required: false,
-    // },
+    image: {
+      type: String, // Cloudinary or local URL
+      required: false,
+    },
 
     // category: {
     // type: String,

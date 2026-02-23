@@ -54,12 +54,12 @@ app.use("/api/products",productRoutes)
 app.listen(PORT); 
 
 
-app.get("/test-db", async (req, res) => {
-  const product = await ProductModel.create({
-    name: "Compass Test",
-    price: 99,
-    category: "test",
-    image: "test.jpg",
-  });
-  res.json(product);
-});
+// app.get("/test-db", async (req, res) => {
+//   const product = await ProductModel.create({
+//     name: "Compass Testj",
+//     price: 99,
+//     category: "test",
+//     image: "test.jpg",
+//   });
+//   res.json(product);
+// });

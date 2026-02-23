@@ -1,117 +1,145 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect,useState , useRef} from 'react';
-import { logout } from '../../redux/featureSlices/authSlice';
-import { useLogoutMutation } from '../../redux/ApiSlices/authApiSlice';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { logout } from "../../redux/featureSlices/authSlice";
+import { useLogoutMutation } from "../../redux/ApiSlices/authApiSlice";
 
-// import { resetCart } from '../../redux/featureSlices/cartSlice';
-
-
-function Myaccount(){
-  const [open,setOpen]=useState(false);
-  const dispatch = useDispatch(); 
+function Myaccount() {
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-const dropdownRef = useRef(null);
-  const handletoggle=()=>{
-    setOpen(!open)
-  }
+  const dropdownRef = useRef(null);
+  const [logoutApiCall] = useLogoutMutation();
 
-const [logoutApiCall] = useLogoutMutation();
+  const handletoggle = () => {
+    setOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
+        setOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
-
-
-  const userInfo=useSelector((state)=>state.auth.userInfo);
-  // const user = userInfo; // alias used in the JSX 
+  const userInfo = useSelector((state) => state.auth.userInfo);
 
   const getUserInitials = () => {
-    if(!userInfo?.name) return '';
-    return userInfo.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  }
-
-
-
+    if (!userInfo?.name) return "U";
+    return userInfo.name
+      .split(" ")
+      .map((namePart) => namePart[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      // NOTE: here we need to reset cart state for when a user logs out so the next
-      // user doesn't inherit the previous users cart and shipping
-      
-      // dispatch(resetCart());
-      // navigate('/login');
     } catch (err) {
       console.error(err);
     }
   };
 
-  const Logout = () => {
-
-    // placeholder for logout logic, e.g. dispatch(logout())
+  if (!userInfo) {
+    return (
+      <div className="flex items-center gap-3">
+        <Link
+          to="/login"
+          className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+        >
+          Log in
+        </Link>
+        <Link
+          to="/register"
+          className="rounded-full bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+        >
+          Sign up
+        </Link>
+      </div>
+    );
   }
 
-  if(!userInfo){
-    return(
-    <div className="hover:bg-yellow-500 cursor-pointer">
-                {/* <Link to="/" className="bg-red-500 "> Login in</Link>
-                <Link to="myaccount/pro" className="bg-red-500 ">Sign up</Link> */}
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <div className="flex items-center gap-2">
+        <Link
+          to="/profile"
+          className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-slate-900 text-xs font-semibold text-white shadow-sm"
+          aria-label="Go to profile"
+        >
+          {userInfo.avatar ? (
+            <img
+              src={userInfo.avatar}
+              alt={userInfo.name || "User avatar"}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span>{getUserInitials()}</span>
+          )}
+        </Link>
 
-                <div>Logout</div>
-                 <div>myaccount/pro</div>
-
-              </div>
-    )
-  }
-
-  return(
-    <div>
-      <button className="absolute" onClick={handletoggle}>
-        {userInfo.avatar ? (
-          <img src={userInfo.avatar}
-               alt={userInfo.name} width={30}
-               height={30}/>
-        ) : (
-          <span>{getUserInitials()}</span>
-        )}
-        <span>{userInfo.name}</span>
-      </button>
+        <button
+          type="button"
+          onClick={handletoggle}
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+          aria-expanded={open}
+          aria-haspopup="menu"
+        >
+          <span className="max-w-[120px] truncate">{userInfo.name}</span>
+          <svg
+            className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
 
       {open && (
-        <div className="absolute mt-5" >
-          
-              <div>
-                <Link to="myaccount/pro" className="bg-red-500 ">My Profile</Link>
-                <div onClick={logoutHandler}>LogoutO</div>
-              </div>
-              <div>
-                <div onClick={() => navigate('/')}> My Order/Order history</div>
-                <div onClick={Logout}>Logout</div>
-              </div>
-           </div> 
-          )}
-        
-      </div>
-    )
-     }
+        <div
+          className="absolute right-0 mt-3 w-48 rounded-xl border border-slate-200 bg-white p-2 text-sm text-slate-700 shadow-lg"
+          role="menu"
+        >
+          <Link
+            to="/profile"
+            className="block rounded-lg px-3 py-2 transition hover:bg-slate-100"
+            role="menuitem"
+          >
+            My Profile
+          </Link>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="block w-full rounded-lg px-3 py-2 text-left transition hover:bg-slate-100"
+            role="menuitem"
+          >
+            Orders
+          </button>
+          <button
+            type="button"
+            onClick={logoutHandler}
+            className="block w-full rounded-lg px-3 py-2 text-left text-rose-600 transition hover:bg-rose-50"
+            role="menuitem"
+          >
+            Log out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
-export default Myaccount
-
-
-
-
-
-
-
-
+export default Myaccount;

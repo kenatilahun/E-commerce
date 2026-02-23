@@ -1,4 +1,5 @@
 import react from "react"
+// import Testpage from "../pages/testpage";
 import {Routes,Route} from "react-router-dom";
 import Layout from '../components/Navbar/layout';
 import Login from '../pages/userpages/login';
@@ -6,17 +7,28 @@ import Profile from '../pages/userpages/profile2';
 import Register from '../pages/userpages/register';
 import Profile2 from '../pages/userpages/profile';
 import MYaccount from "../pages/userpages/myaccount";
+import Categories from "../pages/userpages/Categories";
+import CategoryProducts from "../pages/userpages/CategoryProducts";
+import ProductDetail from "../pages/userpages/ProductDetail";
 // import ProductListPage from "../pages/userpages/categorypagelist";
-import CreateProductForm from "../pages/adminpages/createproduct";
+import AdminLayout from "../pages/adminpages/AdminLayout";
+import CreateProductForm from  '../pages/adminpages/productmanagment/Addproduct';
+import ProductsPage from "../pages/adminpages/productmanagment/productlistpage";
+import AddCategory from "../pages/adminpages/categorymanagment/AddCategory";
+
 function Router(){
        
  return(
     
         <Routes>
         <Route path="/" element={<Layout/>}>
+        {/* <Route path="/testpage" element={<Testpage/>}/> */}
         <Route index element={<Login/>}/>
         <Route path="/login"element={<Login/>}/>
         <Route path="/profile"element={<Profile/>}/>
+        <Route path="/categories" element={<Categories/>}/>
+        <Route path="/category/:slug" element={<CategoryProducts/>}/>
+        <Route path="/product/:id" element={<ProductDetail/>}/>
        <Route path="/Createproduct"element={<CreateProductForm/>}/>
         
         <Route path="myaccount" element={<MYaccount/>}>
@@ -24,13 +36,17 @@ function Router(){
         <Route index element={<Register/>}/>
         </Route>
       
+<Route path="admin" element={<AdminLayout/>}>
+ {/* nested routes for admin pages */}
+ <Route path="products" element={<ProductsPage/>}/> 
+ <Route path="products/new" element={<CreateProductForm/>}/>
+ <Route path="categories/new" element={<AddCategory/>}/>
+</Route>
+       
+</Route>
+</Routes>
 
-        </Route>
-        </Routes>
  )
  
   } 
-        
-        
-
-export default Router
+  export default Router

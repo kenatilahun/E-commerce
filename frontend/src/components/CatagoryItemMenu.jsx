@@ -1,11 +1,9 @@
+
 // for mapping over categories(frontend/src/components/catagoryItem.jsx)
 import {useGetProductsCategorynameQuery} from "../redux/ApiSlices/productApiSlice";
 import { useEffect } from "react";
 import { useState } from "react";
 // import CategoryItem from "../components/CategoryItem";
-
-
-
 import { Link } from "react-router-dom";
 
 const CategorySidebar = () => {
@@ -17,8 +15,7 @@ const CategorySidebar = () => {
   const { data:categories = [] , isLoading} = useGetProductsCategorynameQuery();
 
   return ( 
-	
- <div >
+	<div >
       <button onClick={HandleToggle}>≡Category </button> 
     {open&&(<div className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white transform transition-transform duration-300 `}>
 		{categories.map((cat) => (
@@ -29,13 +26,11 @@ const CategorySidebar = () => {
     )}
 
 
-
-	</div>
+ </div>
   );
 };
 
 export default CategorySidebar;
-
 
 
 
