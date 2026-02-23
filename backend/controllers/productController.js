@@ -75,6 +75,24 @@ console.log(req.body);
 	}
 };
 
+export const getProducts = async (req, res) => {
+  try {
+    const keyword = req.query.keyword?.trim();
+    const filter = keyword
+      ? { name: { $regex: keyword, $options: "i" } }
+      : {};
+
+    const products = await ProductModel.find(filter).populate(
+      "category",
+      "name slug image description"
+    );
+
+    res.json({ products });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const getProductById = async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.id).populate(

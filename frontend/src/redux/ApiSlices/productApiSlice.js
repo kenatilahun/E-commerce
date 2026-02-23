@@ -12,9 +12,9 @@ getProductsCategoryname: builder.query({
 
 
 getProducts: builder.query({
-      query: ({ keyword, pageNumber }) => ({
-        url:'products/category',
-        params: { keyword, pageNumber },
+      query: (params = {}) => ({
+        url: 'products',
+        params,
       }),
       providesTags: ['Products'],
     }),
