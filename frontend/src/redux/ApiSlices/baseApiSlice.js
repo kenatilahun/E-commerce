@@ -13,6 +13,6 @@ baseQuery:fetchBaseQuery({baseUrl: "http://localhost:5000/api/",
  credentials: "include"    
 }),
 
-tagTypes:[],
+tagTypes:["Products","Cart","Categories"],
 endpoints:(builder)=>({}),//Empty - endpoints injected elsewhere
 }); 

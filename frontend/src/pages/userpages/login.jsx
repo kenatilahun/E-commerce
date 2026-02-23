@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../../redux/ApiSlices/authApiSlice";
+import { useMergeCartMutation } from "../../redux/ApiSlices/cartApiSlice";
 import { setCredentials } from "../../redux/featureSlices/authSlice";
+import { clearCart } from "../../redux/featureSlices/cartSlice";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,9 +16,11 @@ function Login() {
   const redirecturl = sp.get("redirect") || "/";
 
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const guestItems = useSelector((state) => state.cart.items);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const [mergeCart] = useMergeCartMutation();
 
   useEffect(() => {
     if (userInfo) {
@@ -29,6 +33,11 @@ function Login() {
     try {
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ res }));
+
+      if (guestItems.length > 0) {
+        await mergeCart({ items: guestItems }).unwrap();
+        dispatch(clearCart());
+      }
     } catch (err) {
       console.error("Login failed:", err);
       alert(err.response?.data?.message || "Login failed");

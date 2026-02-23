@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import protect from "./middleware/authmiddleware.js";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
 import ProductModel from "./models/productModel.js";
 dotenv.config()
 
@@ -50,6 +51,7 @@ app.use(express.json());
 app.use("/api/users",authRoutes);
 app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
+app.use("/api/cart", cartRoutes);
 
 
 

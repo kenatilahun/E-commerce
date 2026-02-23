@@ -65,6 +65,9 @@ return(
         <div className="hidden md:block">
           {/* <CategorySidebar/> */}
         </div>
+        <Link to="/cart" className="text-sm font-semibold text-slate-700 hover:text-slate-900">
+          Cart
+        </Link>
         <Myaccount/>
         
       </div>

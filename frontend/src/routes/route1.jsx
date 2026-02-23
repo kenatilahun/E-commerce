@@ -10,6 +10,7 @@ import MYaccount from "../pages/userpages/myaccount";
 import Categories from "../pages/userpages/Categories";
 import CategoryProducts from "../pages/userpages/CategoryProducts";
 import ProductDetail from "../pages/userpages/ProductDetail";
+import Cart from "../pages/userpages/Cart";
 // import ProductListPage from "../pages/userpages/categorypagelist";
 import AdminLayout from "../pages/adminpages/AdminLayout";
 import CreateProductForm from  '../pages/adminpages/productmanagment/Addproduct';
@@ -29,6 +30,7 @@ function Router(){
         <Route path="/categories" element={<Categories/>}/>
         <Route path="/category/:slug" element={<CategoryProducts/>}/>
         <Route path="/product/:id" element={<ProductDetail/>}/>
+        <Route path="/cart" element={<Cart/>}/>
        <Route path="/Createproduct"element={<CreateProductForm/>}/>
         
         <Route path="myaccount" element={<MYaccount/>}>
