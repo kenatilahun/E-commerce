@@ -9,7 +9,11 @@ if(req.cookies&&req.cookies.token) {
             token=req.cookies.token;
             const decoded=jwt.verify(token,process.env.JWT_SECRET);
             req.user=await userModel.findById(decoded.id).select('-password');
-            next();
+            if(!req.user){
+                res.status(401);
+                throw new Error('Not authorized, user not found');
+            }
+            return next();
     }catch(error)
             {    console.error(error);
 
@@ -33,6 +37,10 @@ throw new Error('Not authorized, token failed');
 }}
 const admin =(req,res,next)=>{
 
-    
+    if(req.user && req.user.isAdmin){
+        return next();
+    }
+    res.status(403);
+    throw new Error('Not authorized as admin');
 }
-export default protect
+export { protect, admin }
