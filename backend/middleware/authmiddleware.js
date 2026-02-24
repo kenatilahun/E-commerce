@@ -20,7 +20,7 @@ const protect=async(req,res,next)=>{
                 res.status(401);
                 throw new Error('Not authorized, user not found');
             }
-            if (req.user.emailVerified === false) {
+            if (process.env.REQUIRE_EMAIL_VERIFICATION === "true" && req.user.emailVerified === false) {
                 res.status(403);
                 throw new Error('Email not verified');
             }

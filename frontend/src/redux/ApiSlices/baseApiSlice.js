@@ -34,6 +34,6 @@ export const baseApiSlice=createApi({
     
 baseQuery: baseQueryWithReauth,
 
-tagTypes:["Products","Cart","Categories"],
+tagTypes:["Products","Cart","Categories","Users"],
 endpoints:(builder)=>({}),//Empty - endpoints injected elsewhere
 }); 

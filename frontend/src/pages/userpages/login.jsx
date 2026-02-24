@@ -32,7 +32,9 @@ function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ res }));
+      if (res?.user) {
+        dispatch(setCredentials(res.user));
+      }
 
       if (guestItems.length > 0) {
         await mergeCart({ items: guestItems }).unwrap();

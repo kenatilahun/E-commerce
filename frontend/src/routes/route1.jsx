@@ -16,6 +16,8 @@ import AdminLayout from "../pages/adminpages/AdminLayout";
 import CreateProductForm from  '../pages/adminpages/productmanagment/Addproduct';
 import ProductsPage from "../pages/adminpages/productmanagment/productlistpage";
 import AddCategory from "../pages/adminpages/categorymanagment/AddCategory";
+import UsersAdmin from "../pages/adminpages/users/UsersAdmin";
+import AdminRoute from "../components/RouteGuards/AdminRoute";
 
 function Router(){
        
@@ -38,11 +40,14 @@ function Router(){
         <Route path="pro" element={<Profile2/>}/>
         </Route>
       
-<Route path="admin" element={<AdminLayout/>}>
- {/* nested routes for admin pages */}
- <Route path="products" element={<ProductsPage/>}/> 
- <Route path="products/new" element={<CreateProductForm/>}/>
- <Route path="categories/new" element={<AddCategory/>}/>
+<Route path="admin" element={<AdminRoute />}>
+  <Route element={<AdminLayout/>}>
+    {/* nested routes for admin pages */}
+    <Route path="products" element={<ProductsPage/>}/> 
+    <Route path="products/new" element={<CreateProductForm/>}/>
+    <Route path="categories/new" element={<AddCategory/>}/>
+    <Route path="customers" element={<UsersAdmin/>}/>
+  </Route>
 </Route>
        
 </Route>
