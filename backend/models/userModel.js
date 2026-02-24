@@ -10,6 +10,13 @@ const userSchema=new mongoose.Schema({
   role: { type: String, enum: ["user", "admin"], default: "user" },
   isAdmin: { type: Boolean, default: false },
   refreshToken: { type: String, default: "" },
+  emailVerified: { type: Boolean, default: false },
+  emailVerifyToken: { type: String, default: "" },
+  emailVerifyExpires: { type: Date, default: null },
+  resetPasswordToken: { type: String, default: "" },
+  resetPasswordExpires: { type: Date, default: null },
+  failedLoginAttempts: { type: Number, default: 0 },
+  lockUntil: { type: Date, default: null },
 }, { timestamps: true });
 
 userSchema.methods.matchPassword=async function(enteredPassword){

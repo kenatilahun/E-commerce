@@ -68,6 +68,16 @@ const productSchema = new mongoose.Schema({
     default: [],
   },
 
+  isFeatured: {
+    type: Boolean,
+    default: false,
+  },
+
+  isRecommended: {
+    type: Boolean,
+    default: false,
+  },
+
     // category: {
     // type: String,
     //   // type: mongoose.Schema.Types.ObjectId,
@@ -100,8 +110,7 @@ const productSchema = new mongoose.Schema({
   //     default: false,
   //   },
   // },
-  // { timestamps: true }
-});
+}, { timestamps: true });
 
 const ProductModel= mongoose.model("products", productSchema);
 

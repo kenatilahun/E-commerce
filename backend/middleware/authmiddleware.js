@@ -20,6 +20,10 @@ const protect=async(req,res,next)=>{
                 res.status(401);
                 throw new Error('Not authorized, user not found');
             }
+            if (req.user.emailVerified === false) {
+                res.status(403);
+                throw new Error('Email not verified');
+            }
             return next();
     }catch(error)
             {    console.error(error);

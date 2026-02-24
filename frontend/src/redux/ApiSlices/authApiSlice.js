@@ -8,14 +8,59 @@ const authApiSlice=baseApiSlice.injectEndpoints({
             body:data,
 
         })
-       })
- ,
+       }),
+       register: builder.mutation({
+        query:(data)=>({
+            url:'users/register',
+            method:'POST',
+            body:data,
+        })
+       }),
+       refresh: builder.mutation({
+        query:()=>({
+            url:'users/refresh',
+            method:'POST',
+        })
+       }),
         logout: builder.mutation({
           query: () => ({
-          url: `logout`,
+          url: `users/logout`,
           method: 'POST',
                         }),
     }),
+    requestPasswordReset: builder.mutation({
+      query: (data) => ({
+        url: "users/password-reset/request",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "users/password-reset/confirm",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    verifyEmail: builder.query({
+      query: (token) => ({
+        url: `users/verify-email?token=${encodeURIComponent(token)}`,
+        method: "GET",
+      }),
+    }),
+    getProfile: builder.query({
+      query: () => ({
+        url: "users/me",
+        method: "GET",
+      }),
+    }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: "users/update-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
 })
  })
-export const {useLoginMutation, useLogoutMutation}=authApiSlice
+export const {useLoginMutation, useLogoutMutation, useRegisterMutation, useRefreshMutation, useRequestPasswordResetMutation, useResetPasswordMutation, useVerifyEmailQuery, useGetProfileQuery, useUpdatePasswordMutation}=authApiSlice
