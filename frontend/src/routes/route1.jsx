@@ -26,6 +26,7 @@ function Router(){
         {/* <Route path="/testpage" element={<Testpage/>}/> */}
         <Route index element={<Login/>}/>
         <Route path="/login"element={<Login/>}/>
+        <Route path="/register" element={<Register/>}/>
         <Route path="/profile"element={<Profile/>}/>
         <Route path="/categories" element={<Categories/>}/>
         <Route path="/category/:slug" element={<CategoryProducts/>}/>
@@ -35,7 +36,6 @@ function Router(){
         
         <Route path="myaccount" element={<MYaccount/>}>
         <Route path="pro" element={<Profile2/>}/>
-        <Route index element={<Register/>}/>
         </Route>
       
 <Route path="admin" element={<AdminLayout/>}>
