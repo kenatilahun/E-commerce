@@ -24,13 +24,23 @@ const setTokenCookie=(res,token,isRefresh=false)=>{
    //  sending 3 things to the client (2variables and 1 object)
     res.cookie(CookieName,token,{httpOnly: true,
                               secure: process.env.NODE_ENV === 'production',
-                               sameSite: 'strict', 
+                               sameSite: process.env.COOKIE_SAMESITE || 'strict', 
                              //  sameSite: 'none',   for third party authentication
                               maxAge: maxAge,
                                path: '/'
    })
 
 }
+
+const clearTokenCookie = (res, isRefresh=false) => {
+  const CookieName=isRefresh ? 'refreshToken' : 'token';
+  res.clearCookie(CookieName, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.COOKIE_SAMESITE || 'strict',
+    path: '/',
+  });
+};
 
 
 
@@ -43,21 +53,17 @@ if(!email||!password){
 }
   // Find user and include password field 
 // const user=await userModel.findOne({email:email.toLowerCase()}).select('+password');
-const user=await userModel.findOne({email:email}).select('+password');
-// if (user&&(await user.matchPassword(password)))
- if (user) { 
-  
-console.log("Login successful:", user, "bravo");
+const user=await userModel.findOne({email:email.toLowerCase()}).select('+password');
+ if (user && (await user.matchPassword(password))) { 
 
    const accessToken = generateToken(user._id);
-  //  const refreshToken = generateRefreshToken(user._id);
+   const refreshToken = generateRefreshToken(user._id);
    
-  //  user.refreshToken = refreshToken;
-  // user.lastLogin = Date.now();
-  // await user.save();
+   user.refreshToken = refreshToken;
+   await user.save();
 
   setTokenCookie(res, accessToken);
-  // setTokenCookie(res, refreshToken, true);
+  setTokenCookie(res, refreshToken, true);
    
 
   res.status(200).json({
@@ -82,10 +88,15 @@ console.log("Login successful:", user, "bravo");
 });
 
 
-export const logoutUser = (req, res) => {
-  res.clearCookie('jwt');
+export const logoutUser = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.cookies || {};
+  if (refreshToken) {
+    await userModel.findOneAndUpdate({ refreshToken }, { refreshToken: "" });
+  }
+  clearTokenCookie(res);
+  clearTokenCookie(res, true);
   res.status(200).json({ message: 'Logged out successfully' });
-};
+});
 
 
 
@@ -108,7 +119,7 @@ export const logoutUser = (req, res) => {
 
 export const register=asyncHandler(async(req,res)=>{
    const {name,email,password}=req.body;
-   if(!email||!name||password){
+   if(!email||!name||!password){
       res.status(400);
       throw new Error('Please provide all required fields')
    };
@@ -167,6 +178,10 @@ if(!refreshToken){
 try{ 
 const decoded=jwt.verify(refreshToken,process.env.JWT_REFRESH_SECRET);
 const user=await userModel.findById(decoded.id);
+if(!user || !user.refreshToken || user.refreshToken !== refreshToken){
+  res.status(401);
+  throw new Error('Invalid refresh token');
+}
 const newAccessToken = generateToken(user._id);
  setTokenCookie(res, newAccessToken);
 

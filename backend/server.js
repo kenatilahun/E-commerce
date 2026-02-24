@@ -1,19 +1,22 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js"; 
 import dotenv from "dotenv";
-import protect from "./middleware/authmiddleware.js";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
-import ProductModel from "./models/productModel.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 dotenv.config()
 
 const app=express();
-const PORT=5000;
+const PORT=process.env.PORT || 5000;
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 app.use(cors({
-  origin: true, // frontend URL
+  origin: process.env.FRONTEND_URL || true, // frontend URL
   credentials: true, // required for cookies
 }));          //allow frontend requests
 
@@ -22,7 +25,9 @@ app.use(cors({
 
 
 app.use(express.json());
- mongoose.connect("mongodb://127.0.0.1:27017/mern_db"); 
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mern_db"); 
 
 
 // const productSchema = new mongoose.Schema({
@@ -53,6 +58,8 @@ app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 
+app.use(notFound);
+app.use(errorHandler);
 
 
 app.listen(PORT); 
