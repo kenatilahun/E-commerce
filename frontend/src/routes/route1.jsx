@@ -2,6 +2,7 @@ import react from "react"
 // import Testpage from "../pages/testpage";
 import {Routes,Route} from "react-router-dom";
 import Layout from '../components/Navbar/layout';
+import Home from "../pages/userpages/Home";
 import Login from '../pages/userpages/login';
 import Profile from '../pages/userpages/profile2';
 import Register from '../pages/userpages/register';
@@ -26,7 +27,7 @@ function Router(){
         <Routes>
         <Route path="/" element={<Layout/>}>
         {/* <Route path="/testpage" element={<Testpage/>}/> */}
-        <Route index element={<Login/>}/>
+        <Route index element={<Home/>}/>
         <Route path="/login"element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/profile"element={<Profile/>}/>
