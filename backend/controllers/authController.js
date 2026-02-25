@@ -65,16 +65,10 @@ export const register = asyncHandler(async (req, res) => {
     throw new Error("User already exists with this email");
   }
 
-  const verifyToken = crypto.randomBytes(32).toString("hex");
-  const verifyTokenHash = hashToken(verifyToken);
-
   const user = await userModel.create({
     name,
     email: email.toLowerCase(),
     password,
-    emailVerified: false,
-    emailVerifyToken: verifyTokenHash,
-    emailVerifyExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 
   const accessToken = generateToken(user._id);
@@ -84,13 +78,6 @@ export const register = asyncHandler(async (req, res) => {
 
   setTokenCookie(res, accessToken);
   setTokenCookie(res, refreshToken, true);
-
-  const verifyUrl = buildAppUrl(`/verify-email?token=${verifyToken}`);
-  await sendEmail({
-    to: user.email,
-    subject: "Verify your email",
-    text: `Verify your email: ${verifyUrl}`,
-  });
 
   res.status(201).json({
     success: true,
@@ -102,7 +89,7 @@ export const register = asyncHandler(async (req, res) => {
       phone: user.phone,
       role: user.role,
       avatar: user.avatar,
-      emailVerified: user.emailVerified,
+      isAdmin: user.isAdmin,
     },
   });
 });
@@ -124,11 +111,6 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   if (user && (await user.matchPassword(password))) {
-    if (process.env.REQUIRE_EMAIL_VERIFICATION === "true" && !user.emailVerified) {
-      res.status(403);
-      throw new Error("Please verify your email before logging in.");
-    }
-
     const accessToken = generateToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
     user.refreshToken = refreshToken;
@@ -149,7 +131,7 @@ export const login = asyncHandler(async (req, res) => {
         phone: user.phone,
         role: user.role,
         avatar: user.avatar,
-        emailVerified: user.emailVerified,
+        isAdmin: user.isAdmin,
       },
     });
   }
@@ -209,32 +191,6 @@ export const refreshToken = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Invalid or expired refresh token");
   }
-});
-
-export const verifyEmail = asyncHandler(async (req, res) => {
-  const { token } = req.query;
-  if (!token) {
-    res.status(400);
-    throw new Error("Token is required");
-  }
-
-  const tokenHash = hashToken(token);
-  const user = await userModel.findOne({
-    emailVerifyToken: tokenHash,
-    emailVerifyExpires: { $gt: new Date() },
-  });
-
-  if (!user) {
-    res.status(400);
-    throw new Error("Invalid or expired token");
-  }
-
-  user.emailVerified = true;
-  user.emailVerifyToken = "";
-  user.emailVerifyExpires = null;
-  await user.save();
-
-  res.json({ message: "Email verified successfully" });
 });
 
 export const requestPasswordReset = asyncHandler(async (req, res) => {
@@ -326,7 +282,7 @@ export const updatePassword = asyncHandler(async (req, res) => {
 export const listUsers = asyncHandler(async (_req, res) => {
   const users = await userModel
     .find()
-    .select("-password -refreshToken -emailVerifyToken -resetPasswordToken");
+    .select("-password -refreshToken -resetPasswordToken");
   res.json({ users });
 });
 
@@ -342,3 +298,5 @@ export const makeAdmin = asyncHandler(async (req, res) => {
   await user.save();
   res.json({ message: "User promoted to admin", userId: user._id });
 });
+
+

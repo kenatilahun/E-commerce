@@ -1,32 +1,32 @@
-import { baseApiSlice } from "./baseApiSlice"
-const authApiSlice=baseApiSlice.injectEndpoints({
-    endpoints:(builder)=>({
-       login: builder.mutation({
-        query:(data)=>({
-            url:'users/login',
-            method:'POST',
-            body:data,
+import { baseApiSlice } from "./baseApiSlice";
 
-        })
-       }),
-       register: builder.mutation({
-        query:(data)=>({
-            url:'users/register',
-            method:'POST',
-            body:data,
-        })
-       }),
-       refresh: builder.mutation({
-        query:()=>({
-            url:'users/refresh',
-            method:'POST',
-        })
-       }),
-        logout: builder.mutation({
-          query: () => ({
-          url: `users/logout`,
-          method: 'POST',
-                        }),
+const authApiSlice = baseApiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (data) => ({
+        url: "users/login",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    register: builder.mutation({
+      query: (data) => ({
+        url: "users/register",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    refresh: builder.mutation({
+      query: () => ({
+        url: "users/refresh",
+        method: "POST",
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "users/logout",
+        method: "POST",
+      }),
     }),
     requestPasswordReset: builder.mutation({
       query: (data) => ({
@@ -42,12 +42,6 @@ const authApiSlice=baseApiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    verifyEmail: builder.query({
-      query: (token) => ({
-        url: `users/verify-email?token=${encodeURIComponent(token)}`,
-        method: "GET",
-      }),
-    }),
     getProfile: builder.query({
       query: () => ({
         url: "users/me",
@@ -61,6 +55,16 @@ const authApiSlice=baseApiSlice.injectEndpoints({
         body: data,
       }),
     }),
-})
- })
-export const {useLoginMutation, useLogoutMutation, useRegisterMutation, useRefreshMutation, useRequestPasswordResetMutation, useResetPasswordMutation, useVerifyEmailQuery, useGetProfileQuery, useUpdatePasswordMutation}=authApiSlice
+  }),
+});
+
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useRefreshMutation,
+  useRequestPasswordResetMutation,
+  useResetPasswordMutation,
+  useGetProfileQuery,
+  useUpdatePasswordMutation,
+} = authApiSlice;

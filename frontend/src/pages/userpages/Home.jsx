@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "../../components/home/Hero";
 import FeaturedCategories from "../../components/home/FeaturedCategories";
 import FeaturedProducts from "../../components/home/FeaturedProducts";
@@ -6,6 +7,9 @@ import { useGetCategoriesQuery } from "../../redux/ApiSlices/categoryApiSlice";
 import { useGetProductsQuery } from "../../redux/ApiSlices/productApiSlice";
 
 const Home = () => {
+  const location = useLocation();
+  const authMessage = location.state?.authMessage;
+
   const {
     data: categoriesData,
     isLoading: categoriesLoading,
@@ -35,6 +39,12 @@ const Home = () => {
 
   return (
     <div className="font-home space-y-12 pb-16">
+      {authMessage && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
+          {authMessage}
+        </div>
+      )}
+
       <Hero products={heroProducts} isLoading={productsLoading} isError={productsError} />
 
       <FeaturedCategories

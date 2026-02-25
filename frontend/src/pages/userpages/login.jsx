@@ -11,9 +11,10 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPass] = useState("");
 
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
+  const location = useLocation();
+  const sp = new URLSearchParams(location.search);
   const redirecturl = sp.get("redirect") || "/";
+  const authMessage = location.state?.authMessage;
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const guestItems = useSelector((state) => state.cart.items);
@@ -78,6 +79,12 @@ function Login() {
               <p className="text-sm font-medium text-slate-500">Sign in</p>
               <h2 className="mt-2 text-2xl font-semibold text-slate-900">Customer login</h2>
             </div>
+
+            {authMessage && (
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
+                {authMessage}
+              </div>
+            )}
 
             <form onSubmit={handlesubmit} className="mt-8 grid gap-5">
               <div className="grid gap-2">

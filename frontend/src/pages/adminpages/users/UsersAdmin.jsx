@@ -61,7 +61,6 @@ const UsersAdmin = () => {
               <th className="px-4 py-3 text-left font-semibold text-slate-600">Name</th>
               <th className="px-4 py-3 text-left font-semibold text-slate-600">Email</th>
               <th className="px-4 py-3 text-left font-semibold text-slate-600">Role</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-600">Verified</th>
               <th className="px-4 py-3 text-left font-semibold text-slate-600">Action</th>
             </tr>
           </thead>
@@ -71,9 +70,6 @@ const UsersAdmin = () => {
                 <td className="px-4 py-3 font-medium text-slate-800">{user.name}</td>
                 <td className="px-4 py-3 text-slate-600">{user.email}</td>
                 <td className="px-4 py-3 text-slate-600">{user.role || "user"}</td>
-                <td className="px-4 py-3 text-slate-600">
-                  {user.emailVerified ? "Yes" : "No"}
-                </td>
                 <td className="px-4 py-3">
                   {user.isAdmin || user.role === "admin" ? (
                     <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
