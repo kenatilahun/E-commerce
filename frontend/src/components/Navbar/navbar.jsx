@@ -45,7 +45,9 @@ return(
   <nav className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
     <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
-        
+        <div className="hidden md:block">
+          <AllCategoriesButton />
+        </div>
         <Link to="/" className="text-lg font-semibold tracking-tight text-slate-900">
           Storefront
         </Link>
@@ -59,9 +61,6 @@ return(
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden md:block">
-          <AllCategoriesButton />
-        </div>
         <div className="hidden md:block">
           {/* <CategorySidebar/> */}
         </div>
