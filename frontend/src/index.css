@@ -1,29 +1,44 @@
-/* src/index.css */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap");
 @import "tailwindcss";
 
+:root {
+  --home-bg: #f6f6f7;
+  --home-white: #ffffff;
+  --home-text: #232323;
+  --home-muted: #767676;
+  --home-primary: #ef3f62;
+  --home-soft-border: #ffd2da;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--home-bg);
+  color: var(--home-text);
+  font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+}
+
 .font-home {
-  font-family: "Space Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Nunito Sans", "Segoe UI", Arial, sans-serif;
 }
 
 .font-display {
-  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-family: "Jost", "Segoe UI", Arial, sans-serif;
 }
 
-.float-slow {
-  animation: float-slow 9s ease-in-out infinite;
+.homepage-v2 .home-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.float-slower {
-  animation: float-slow 12s ease-in-out infinite;
+.homepage-v2 .home-card:hover {
+  transform: translateY(-2px);
+  border-color: #ffb8c4;
+  box-shadow: 0 14px 24px -18px rgba(15, 16, 18, 0.4);
 }
 
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+.placeholder-image {
+  background-image: radial-gradient(circle at 20% 20%, rgba(239, 63, 98, 0.15) 0%, rgba(239, 63, 98, 0.04) 45%, rgba(255, 255, 255, 0.95) 100%);
 }

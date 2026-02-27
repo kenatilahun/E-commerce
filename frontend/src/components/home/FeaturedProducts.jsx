@@ -1,15 +1,28 @@
 import React from "react";
 import ProductCard from "../ProductCard";
 
-const FeaturedProducts = ({ title, products = [], isLoading, isError, error, onRetry }) => {
+const FeaturedProducts = ({
+  title,
+  description,
+  products = [],
+  isLoading,
+  isError,
+  error,
+  onRetry,
+}) => {
   return (
-    <section className="space-y-4">
-      <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Featured products</p>
-        <h2 className="mt-2 font-display text-2xl font-semibold text-slate-900">{title}</h2>
-        <p className="mt-2 text-sm text-slate-500">
-          Handpicked items with the highest rating from customers this week.
-        </p>
+    <section className="space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.32em] text-slate-400">Featured products</p>
+          <h2 className="mt-2 font-display text-2xl font-semibold text-slate-900">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-500">
+            {description || "Handpicked items with the highest rating from customers this week."}
+          </p>
+        </div>
+        <div className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
+          Updated weekly
+        </div>
       </div>
 
       {isLoading && (
@@ -45,7 +58,13 @@ const FeaturedProducts = ({ title, products = [], isLoading, isError, error, onR
               No products to display yet. Add products in the admin panel to highlight them here.
             </div>
           ) : (
-            products.map((product) => <ProductCard key={product._id} product={product} />)
+            products.map((product) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+                className="border-amber-100 shadow-sm hover:shadow-lg"
+              />
+            ))
           )}
         </div>
       )}

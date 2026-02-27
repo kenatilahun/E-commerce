@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import bannerRoutes from "./routes/bannerRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 dotenv.config()
 
@@ -57,6 +58,7 @@ app.use("/api/users",authRoutes);
 app.use("/api/products",productRoutes)
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/banners", bannerRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

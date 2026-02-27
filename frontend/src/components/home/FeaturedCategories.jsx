@@ -12,12 +12,12 @@ const FeaturedCategories = ({
   onRetry,
 }) => {
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Featured categories</p>
+          <p className="text-xs uppercase tracking-[0.32em] text-amber-600">Featured categories</p>
           <h2 className="mt-2 font-display text-2xl font-semibold text-slate-900">{title}</h2>
-          {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}
+          {subtitle && <p className="mt-2 max-w-2xl text-sm text-slate-500">{subtitle}</p>}
         </div>
         <AllCategoriesButton />
       </div>
@@ -27,7 +27,7 @@ const FeaturedCategories = ({
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className="h-40 rounded-2xl border border-dashed border-slate-200 bg-slate-50"
+              className="h-44 rounded-3xl border border-dashed border-amber-100 bg-amber-50/40"
             />
           ))}
         </div>
@@ -59,9 +59,9 @@ const FeaturedCategories = ({
               <Link
                 key={category._id}
                 to={`/category/${category.slug}`}
-                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                className="group relative overflow-hidden rounded-3xl border border-amber-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="h-36 w-full overflow-hidden bg-slate-100">
+                <div className="h-40 w-full overflow-hidden bg-amber-50">
                   {category.image ? (
                     <img
                       src={category.image}
@@ -74,11 +74,17 @@ const FeaturedCategories = ({
                     </div>
                   )}
                 </div>
-                <div className="p-4">
+                <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-600 shadow">
+                  Trending
+                </div>
+                <div className="border-t border-amber-100 p-4">
                   <h3 className="text-lg font-semibold text-slate-900">{category.name}</h3>
                   <p className="mt-1 text-sm text-slate-500">
                     {category.description || "Explore new arrivals and best sellers."}
                   </p>
+                  <div className="mt-3 inline-flex items-center text-xs font-semibold text-slate-900">
+                    Shop now →
+                  </div>
                 </div>
               </Link>
             ))

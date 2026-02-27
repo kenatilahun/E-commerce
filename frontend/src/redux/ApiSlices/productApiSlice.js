@@ -35,12 +35,26 @@ getProducts: builder.query({
       invalidatesTags: ['Products'],
     }),
 
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `products/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
  }),
 
 
 
   });
-export const {useGetProductsCategorynameQuery,useCreateProductMutation,useGetProductsQuery,useGetProductByIdQuery}=productsApiSlice
+export const {
+  useGetProductsCategorynameQuery,
+  useCreateProductMutation,
+  useGetProductsQuery,
+  useGetProductByIdQuery,
+  useDeleteProductMutation,
+} = productsApiSlice
 
 
 

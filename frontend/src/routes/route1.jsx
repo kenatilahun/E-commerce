@@ -17,6 +17,7 @@ import ProductsPage from "../pages/adminpages/productmanagment/productlistpage";
 import AddCategory from "../pages/adminpages/categorymanagment/AddCategory";
 import UsersAdmin from "../pages/adminpages/users/UsersAdmin";
 import AdminRoute from "../components/RouteGuards/AdminRoute";
+import BannersPage from "../pages/adminpages/bannermanagment/BannersPage";
 
 function Router() {
   return (
@@ -30,7 +31,6 @@ function Router() {
         <Route path="/category/:slug" element={<CategoryProducts />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/Createproduct" element={<CreateProductForm />} />
         <Route path="myaccount" element={<MYaccount />}>
           <Route path="pro" element={<Profile2 />} />
         </Route>
@@ -43,6 +43,7 @@ function Router() {
           <Route path="products/new" element={<CreateProductForm />} />
           <Route path="categories/new" element={<AddCategory />} />
           <Route path="customers" element={<UsersAdmin />} />
+          <Route path="banners" element={<BannersPage />} />
         </Route>
       </Route>
     </Routes>

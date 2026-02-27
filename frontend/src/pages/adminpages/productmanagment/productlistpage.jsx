@@ -1,11 +1,16 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useGetProductsQuery } from "../../../redux/ApiSlices/productApiSlice";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../../../redux/ApiSlices/productApiSlice";
 
 const ProductsPage = () => {
   const [search, setSearch] = useState("");
+  const [deletingProductId, setDeletingProductId] = useState(null);
 
   const { data, isLoading, isError, error, refetch } = useGetProductsQuery();
+  const [deleteProduct] = useDeleteProductMutation();
 
   const products = data?.products || [];
 
@@ -32,6 +37,22 @@ const ProductsPage = () => {
       currency: "USD",
       maximumFractionDigits: 2,
     }).format(numberValue);
+  };
+
+  const handleDeleteProduct = async (product) => {
+    const confirmed = window.confirm(
+      `Delete "${product.name}"? This action cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingProductId(product._id);
+      await deleteProduct(product._id).unwrap();
+    } catch (err) {
+      alert(err?.data?.message || "Failed to delete product");
+    } finally {
+      setDeletingProductId(null);
+    }
   };
 
   return (
@@ -180,10 +201,12 @@ const ProductsPage = () => {
                               Edit
                             </button>
                             <button
-                              disabled
-                              className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-400"
+                              type="button"
+                              onClick={() => handleDeleteProduct(product)}
+                              disabled={deletingProductId === product._id}
+                              className="rounded-full border border-rose-200 bg-white px-3 py-1.5 text-xs font-semibold text-rose-700 shadow-sm transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-70"
                             >
-                              Delete
+                              {deletingProductId === product._id ? "Deleting..." : "Delete"}
                             </button>
                           </div>
                         </td>
