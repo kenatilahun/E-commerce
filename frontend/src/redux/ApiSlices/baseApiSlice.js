@@ -7,8 +7,18 @@ import { logout } from "../featureSlices/authSlice"
 //  modular API organization
 // It allows you to add endpoints to an existing API slice instead of defining all endpoints in one place. This is crucial for
  
+const apiUrl =
+  (typeof process !== "undefined" && process.env?.REACT_APP_API_URL) ||
+  import.meta.env.REACT_APP_API_URL ||
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000";
+
+const normalizedApiBase = `${apiUrl}`.replace(/\/+$/, "").endsWith("/api")
+  ? `${apiUrl}`.replace(/\/+$/, "")
+  : `${apiUrl}`.replace(/\/+$/, "") + "/api";
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/",
+  baseUrl: `${normalizedApiBase}/`,
   credentials: "include",
 });
 
