@@ -3,6 +3,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import { useParams } from 'react-router-dom';
 
+const apiUrl =
+  (typeof process !== "undefined" && process.env?.REACT_APP_API_URL) ||
+  import.meta.env.REACT_APP_API_URL ||
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000";
+
+const normalizedApiBase = `${apiUrl}`.replace(/\/+$/, "").endsWith("/api")
+  ? `${apiUrl}`.replace(/\/+$/, "")
+  : `${apiUrl}`.replace(/\/+$/, "") + "/api";
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,7 +33,7 @@ const token= localStorage.getItem("token")
 
 
         
-        const response= await axios.get("http://localhost:5000/profile",{
+        const response= await axios.get(`${normalizedApiBase}/users/me`,{
           headers:{ Authorization:`Bearer ${token}`}
         });
         setUser(response.data);
