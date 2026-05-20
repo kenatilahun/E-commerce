@@ -307,7 +307,7 @@ export default function Homepage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredProducts.map((product) => (
-            <Card key={product._id} className="bg-slate-900 border-slate-800 overflow-hidden hover:border-slate-600 hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-300 group">
+            <Card key={product._id} className="relative bg-slate-900 border-slate-800 overflow-hidden hover:border-slate-600 hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-300 group">
               <div className="relative h-56 overflow-hidden bg-slate-800">
                 <Link to={`/product?id=${product._id}`} className="block h-full">
                   <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -324,8 +324,8 @@ export default function Homepage() {
                   </Badge>
                 ) : null}
                 <button
-                  onClick={() => toggleWish(product._id)}
-                  className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-lg ${wishlist.includes(product._id) ? "bg-red-500 text-white" : "bg-slate-900/70 backdrop-blur-sm text-slate-300 hover:bg-red-500 hover:text-white"}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWish(product._id); }}
+                  className={`absolute z-10 top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-lg ${wishlist.includes(product._id) ? "bg-red-500 text-white" : "bg-slate-900/70 backdrop-blur-sm text-slate-300 hover:bg-red-500 hover:text-white"}`}
                 >
                   <Heart className="w-4 h-4" fill={wishlist.includes(product._id) ? "currentColor" : "none"} />
                 </button>
@@ -337,7 +337,7 @@ export default function Homepage() {
                   <span className="text-sm font-bold text-white">{Number(product.rating || 0).toFixed(1)}</span>
                   <span className="text-sm text-slate-500">({Number(product.numReviews || 0).toLocaleString()})</span>
                 </div>
-                <Link to={`/product?id=${product._id}`} className="block">
+                <Link to={`/product?id=${product._id}`} className="block after:absolute after:inset-0 after:z-0">
                   <h3 className="font-bold text-slate-100 mb-3 line-clamp-1 group-hover:text-white">{product.name}</h3>
                 </Link>
                 <div className="flex items-center justify-between">
@@ -348,8 +348,8 @@ export default function Homepage() {
                     <span className="text-xl font-black text-blue-400">${Number(product.price).toLocaleString()}</span>
                   </div>
                   <Button
-                    className="bg-blue-600 hover:bg-blue-500 text-white rounded-full h-9 px-4 text-sm font-bold shadow-md shadow-blue-600/20"
-                    onClick={() => handleAddToCart(product)}
+                    className="relative z-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full h-9 px-4 text-sm font-bold shadow-md shadow-blue-600/20"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddToCart(product); }}
                     disabled={isAdding}
                   >
                     Add <ShoppingCart className="w-3.5 h-3.5 ml-1.5" />

@@ -269,7 +269,7 @@ export default function ProductListing() {
 
             <div className={`grid gap-5 ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
               {filtered.map((product) => (
-                <Card key={product.id} className={`bg-slate-900 border-slate-800 overflow-hidden hover:border-slate-600 hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300 group ${view === "list" ? "flex flex-row" : ""}`}>
+                <Card key={product.id} className={`relative bg-slate-900 border-slate-800 overflow-hidden hover:border-slate-600 hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300 group ${view === "list" ? "flex flex-row" : ""}`}>
                   <div className={`relative overflow-hidden bg-slate-800 ${view === "list" ? "w-48 shrink-0" : "h-52"}`}>
                     <Link to={`/product?id=${product.id}`} className="block h-full">
                       <img src={product.img} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -282,8 +282,8 @@ export default function ProductListing() {
                     )}
                     <Badge className="absolute top-2 right-10 bg-slate-900/80 backdrop-blur text-slate-300 border-slate-700 text-xs">{product.brand}</Badge>
                     <button
-                      onClick={() => toggleWish(product.id)}
-                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow ${wishlist.includes(product.id) ? "bg-red-500 text-white" : "bg-slate-900/70 backdrop-blur text-slate-400 hover:bg-red-500 hover:text-white"}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWish(product.id); }}
+                      className={`absolute z-10 top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow ${wishlist.includes(product.id) ? "bg-red-500 text-white" : "bg-slate-900/70 backdrop-blur text-slate-400 hover:bg-red-500 hover:text-white"}`}
                     >
                       <Heart className="w-4 h-4" fill={wishlist.includes(product.id) ? "currentColor" : "none"} />
                     </button>
@@ -295,7 +295,7 @@ export default function ProductListing() {
                       <span className="text-sm font-bold text-white">{product.rating.toFixed(1)}</span>
                       <span className="text-xs text-slate-500">({product.reviews.toLocaleString()} reviews)</span>
                     </div>
-                    <Link to={`/product?id=${product.id}`} className="block flex-1">
+                    <Link to={`/product?id=${product.id}`} className="block flex-1 after:absolute after:inset-0 after:z-0">
                       <h3 className="font-bold text-slate-100 mb-3 line-clamp-2 leading-snug group-hover:text-white">{product.name}</h3>
                     </Link>
                     <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-800">
@@ -304,8 +304,8 @@ export default function ProductListing() {
                         <div className="text-xl font-black text-blue-400">${product.price.toLocaleString()}</div>
                       </div>
                       <Button
-                        className="bg-blue-600 hover:bg-blue-500 text-white rounded-full h-9 px-4 text-sm font-bold shadow-md shadow-blue-600/20"
-                        onClick={() => handleAddToCart(product.id)}
+                        className="relative z-10 bg-blue-600 hover:bg-blue-500 text-white rounded-full h-9 px-4 text-sm font-bold shadow-md shadow-blue-600/20"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddToCart(product.id); }}
                         disabled={isAdding}
                       >
                         Add to Cart
