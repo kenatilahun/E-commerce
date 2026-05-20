@@ -6,7 +6,7 @@ import cloudinary from "../config/cloudinary.js";
 const uploadToCloudinary = (fileBuffer) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "products" },
+      { folder: "E-commerce/products" },
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -17,8 +17,19 @@ const uploadToCloudinary = (fileBuffer) =>
 
 export const createProduct = async (req, res) => {
   try {
-    console.log("FILE:", req.file)
-    const { name, price, category, isFeatured, isRecommended } = req.body;
+    const {
+      name,
+      price,
+      originalPrice,
+      brand,
+      description,
+      countInStock,
+      category,
+      isFeatured,
+      isRecommended,
+      rating,
+      numReviews,
+    } = req.body;
 
     let imageUrl = "";
 
@@ -41,11 +52,17 @@ export const createProduct = async (req, res) => {
 
     const product = await ProductModel.create({
       name,
-      price, 
+      price,
+      originalPrice: originalPrice || 0,
+      brand: brand || "",
+      description: description || "",
+      countInStock: countInStock || 0,
       category: categoryDoc._id,
       image: imageUrl,
       isFeatured: isFeatured === "true" || isFeatured === true,
       isRecommended: isRecommended === "true" || isRecommended === true,
+      rating: rating || 0,
+      numReviews: numReviews || 0,
     });
 
     res.status(201).json({ product, imageUrl });
@@ -108,7 +125,19 @@ export const getProductById = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, category, isFeatured, isRecommended, countInStock } = req.body;
+    const {
+      name,
+      price,
+      originalPrice,
+      brand,
+      description,
+      category,
+      isFeatured,
+      isRecommended,
+      countInStock,
+      rating,
+      numReviews,
+    } = req.body;
 
     const product = await ProductModel.findById(req.params.id);
     if (!product) {
@@ -117,8 +146,12 @@ export const updateProduct = async (req, res) => {
 
     if (name !== undefined) product.name = name;
     if (price !== undefined) product.price = price;
+    if (originalPrice !== undefined) product.originalPrice = originalPrice;
+    if (brand !== undefined) product.brand = brand;
     if (description !== undefined) product.description = description;
     if (countInStock !== undefined) product.countInStock = countInStock;
+    if (rating !== undefined) product.rating = rating;
+    if (numReviews !== undefined) product.numReviews = numReviews;
     if (isFeatured !== undefined) {
       product.isFeatured = isFeatured === "true" || isFeatured === true;
     }

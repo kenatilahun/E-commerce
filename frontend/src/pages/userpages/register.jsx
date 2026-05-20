@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useRegisterMutation } from "../../redux/ApiSlices/authApiSlice";
+import { setCredentials } from "../../redux/featureSlices/authSlice";
 
 function Register (){
 const [name,setName]=useState("");
@@ -9,6 +11,10 @@ const [password,setPass]=useState("");
 const [confirmPassword,setConfirmPassword]=useState("");
 const [error,setError]=useState("");
 const [register, { isLoading }] = useRegisterMutation();
+const dispatch = useDispatch();
+const location = useLocation();
+const sp = new URLSearchParams(location.search);
+const redirecturl = sp.get("redirect") || "/";
 const navigate=useNavigate()
 
 const handlesubmit=async (e)=>{
@@ -23,8 +29,11 @@ const handlesubmit=async (e)=>{
       return;
     }
     try{
-      await register({ name, email, password }).unwrap();
-      navigate("/login", { state: { fromRegister: true } });
+      const res = await register({ name, email, password }).unwrap();
+      if (res?.user) {
+        dispatch(setCredentials(res.user));
+      }
+      navigate(redirecturl, { replace: true, state: { fromRegister: true } });
     } catch (err) {
       setError(err?.data?.message || "Registration failed");
     }
@@ -140,7 +149,7 @@ const handlesubmit=async (e)=>{
 
         <div className="mt-6 text-sm text-slate-600">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-slate-900 hover:text-slate-700">
+          <Link to={`/login?redirect=${encodeURIComponent(redirecturl)}`} className="font-semibold text-slate-900 hover:text-slate-700">
             Sign in
           </Link>
         </div>

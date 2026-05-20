@@ -95,7 +95,7 @@ export const addCartItem = async (req, res) => {
         item.product.toString() === productId &&
         String(item.variantId || "") === String(variantInfo.variantId || "")
     );
-
+  
     if (existing) {
       const newQty = existing.qty + requestedQty;
       if (variantInfo.stock < newQty) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { logout } from "../../redux/featureSlices/authSlice";
 import { useLogoutMutation } from "../../redux/ApiSlices/authApiSlice";
@@ -9,6 +9,7 @@ function Myaccount() {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const dropdownRef = useRef(null);
   const [logoutApiCall] = useLogoutMutation();
 
@@ -27,6 +28,7 @@ function Myaccount() {
   }, []);
 
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const redirectTarget = `${location.pathname}${location.search || ""}${location.hash || ""}`;
 
   const getUserInitials = () => {
     if (!userInfo?.name) return "U";
@@ -51,13 +53,13 @@ function Myaccount() {
     return (
       <div className="flex items-center gap-3">
         <Link
-          to="/login"
+          to={`/login?redirect=${encodeURIComponent(redirectTarget)}`}
           className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
         >
           Log in
         </Link>
         <Link
-          to="/register"
+          to={`/register?redirect=${encodeURIComponent(redirectTarget)}`}
           className="rounded-full bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
         >
           Sign up

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useGetProductsQuery } from "../redux/ApiSlices/productApiSlice";
 
 function formatPrice(value) {
@@ -21,7 +22,7 @@ function Search() {
   const [submittedQuery, setSubmittedQuery] = useState("");
 
   const {
-    data: products = [],
+    data,
     isFetching,
     isError,
     error,
@@ -37,6 +38,7 @@ function Search() {
   };
 
   const isLoading = isFetching;
+  const products = data?.products || [];
   const hasResults = products.length > 0;
   const showEmpty = isSuccess && !hasResults;
   const isDisabled = isLoading || !query.trim();
@@ -83,7 +85,9 @@ function Search() {
                   className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm"
                 >
                   <div className="font-semibold text-slate-900">
-                    {item?.name || "Unnamed product"}
+                    <Link to="/product" className="hover:text-blue-600 transition-colors">
+                      {item?.name || "Unnamed product"}
+                    </Link>
                   </div>
                   {item?.price !== undefined && (
                     <div className="text-slate-600">{formatPrice(item.price)}</div>

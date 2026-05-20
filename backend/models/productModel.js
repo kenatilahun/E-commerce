@@ -40,6 +40,18 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
 
+  originalPrice: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+
+  brand: {
+    type: String,
+    default: "",
+    trim: true,
+  },
+
   description: {
     type: String,
     default: "",
@@ -78,38 +90,18 @@ const productSchema = new mongoose.Schema({
     default: false,
   },
 
-    // category: {
-    // type: String,
-    //   // type: mongoose.Schema.Types.ObjectId,
-    //   // ref: "CategoryModel",
-    //   required: true,
-    // },
+  rating: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
 
-    // brand: {
-    //   type: String,
-    // },
+  numReviews: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
 
-    // countInStock: {
-    //   type: Number,
-    //   required: true,
-    //   default: 0,
-    // },
-
-    // rating: {
-    //   type: Number,
-    //   default: 0,
-    // },
-
-    // numReviews: {
-    //   type: Number,
-    //   default: 0,
-    // },
-
-  //   isFeatured: {
-  //     type: Boolean,
-  //     default: false,
-  //   },
-  // },
 }, { timestamps: true });
 
 const ProductModel= mongoose.model("products", productSchema);

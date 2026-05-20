@@ -14,7 +14,7 @@ function Login() {
   const location = useLocation();
   const sp = new URLSearchParams(location.search);
   const redirecturl = sp.get("redirect") || "/";
-  const authMessage = location.state?.authMessage;
+  const authMessage = location.state?.authMessage || (location.state?.fromRegister ? "Account created successfully. Welcome back." : "");
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const guestItems = useSelector((state) => state.cart.items);
@@ -41,6 +41,8 @@ function Login() {
         await mergeCart({ items: guestItems }).unwrap();
         dispatch(clearCart());
       }
+
+      navigate(redirecturl, { replace: true });
     } catch (err) {
       console.error("Login failed:", err);
       alert(err.response?.data?.message || "Login failed");
@@ -126,7 +128,10 @@ function Login() {
 
             <div className="mt-6 text-sm text-slate-600">
               Don&apos;t have an account?{" "}
-              <Link to="/register" className="font-semibold text-slate-900 hover:text-slate-700">
+              <Link
+                to={`/register?redirect=${encodeURIComponent(redirecturl)}`}
+                className="font-semibold text-slate-900 hover:text-slate-700"
+              >
                 Sign up
               </Link>
             </div>

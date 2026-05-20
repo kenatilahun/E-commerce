@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,11 +18,14 @@ const Cart = () => {
   });
   const [updateCartItem, { isLoading: isUpdating }] = useUpdateCartItemMutation();
   const [removeCartItem, { isLoading: isRemoving }] = useRemoveCartItemMutation();
+  const [removingKey, setRemovingKey] = useState("");
 
   const items = useMemo(() => {
     if (userInfo) return cart?.items || [];
     return guestItems;
   }, [userInfo, cart, guestItems]);
+
+  const itemCount = useMemo(() => items.reduce((sum, item) => sum + (item.qty || 0), 0), [items]);
 
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
@@ -30,6 +33,10 @@ const Cart = () => {
       return sum + price * item.qty;
     }, 0);
   }, [items]);
+
+  const shipping = subtotal >= 50 ? 0 : 8.99;
+  const discount = 0;
+  const total = subtotal + shipping - discount;
 
   const handleQtyChange = async (item, qty) => {
     if (qty < 1) return;
@@ -49,17 +56,23 @@ const Cart = () => {
   };
 
   const handleRemove = async (item) => {
-    if (userInfo) {
-      await removeCartItem(item._id);
-      return;
-    }
+    const key = item._id || `${item.productId}-${item.variantId || ""}`;
+    setRemovingKey(key);
 
-    dispatch(
-      removeItem({
-        productId: item.productId,
-        variantId: item.variantId,
-      })
-    );
+    const removeAction = async () => {
+      if (userInfo) {
+        await removeCartItem(item._id);
+        return;
+      }
+      dispatch(
+        removeItem({
+          productId: item.productId,
+          variantId: item.variantId,
+        })
+      );
+    };
+
+    setTimeout(removeAction, 180);
   };
 
   if (userInfo && isLoading) {
@@ -67,92 +80,148 @@ const Cart = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Your cart</h1>
-          <p className="mt-1 text-sm text-slate-500">Review items before checkout.</p>
+          <h1 className="text-3xl font-semibold text-slate-900">Shopping Cart</h1>
+          <p className="mt-2 text-sm text-slate-500">{itemCount} items</p>
         </div>
-        <Link to="/categories" className="text-sm font-semibold text-slate-700 hover:underline">
-          Continue shopping
-        </Link>
       </div>
 
       {items.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center">
-          <div className="text-sm text-slate-500">Your cart is empty.</div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+          <div className="text-sm text-slate-500">Your cart is empty</div>
+          <Link
+            to="/categories"
+            className="mt-4 inline-flex rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+          >
+            Start Shopping
+          </Link>
         </div>
       ) : (
-        <div className="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <div className="space-y-4">
-            {items.map((item) => {
-              const name = item.nameSnapshot || item.name || item.product?.name || "Product";
-              const image = item.imageSnapshot || item.image || item.product?.image || "";
-              const price = item.priceSnapshot ?? item.price ?? item.product?.price ?? 0;
-              const variant = item.variantLabel || "";
+        <div className="grid gap-8 lg:grid-cols-[2.2fr_1fr]">
+          <div>
+            <div className="mb-4 flex items-center justify-between text-sm text-slate-500">
+              <Link to="/categories" className="font-semibold text-slate-700 hover:underline">
+                Continue Shopping
+              </Link>
+              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs text-blue-700">
+                Free shipping over $50
+              </span>
+            </div>
 
-              return (
-                <div
-                  key={item._id || `${item.productId}-${item.variantId || ""}`}
-                  className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center"
-                >
-                  <div className="h-20 w-20 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                    {image ? (
-                      <img src={image} alt={name} className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">No image</div>
-                    )}
-                  </div>
+            <div className="space-y-4">
+              {items.map((item) => {
+                const name = item.nameSnapshot || item.name || item.product?.name || "Product";
+                const image = item.imageSnapshot || item.image || item.product?.image || "";
+                const price = item.priceSnapshot ?? item.price ?? item.product?.price ?? 0;
+                const variant = item.variantLabel || "";
+                const key = item._id || `${item.productId}-${item.variantId || ""}`;
+                const isRemovingRow = removingKey === key;
 
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold text-slate-900">{name}</div>
-                    {variant && <div className="text-xs text-slate-500">{variant}</div>}
-                    <div className="mt-1 text-sm font-semibold text-slate-900">${price}</div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleQtyChange(item, item.qty - 1)}
-                      className="h-8 w-8 rounded-full border border-slate-200 bg-white text-slate-700"
-                    >
-                      -
-                    </button>
-                    <span className="w-10 text-center text-sm font-semibold text-slate-800">{item.qty}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleQtyChange(item, item.qty + 1)}
-                      className="h-8 w-8 rounded-full border border-slate-200 bg-white text-slate-700"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(item)}
-                    disabled={isRemoving || isUpdating}
-                    className="text-xs font-semibold text-rose-700 hover:underline"
+                return (
+                  <div
+                    key={key}
+                    className={`flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 sm:flex-row sm:items-center ${
+                      isRemovingRow ? "opacity-0 -translate-y-1" : "opacity-100"
+                    }`}
                   >
-                    Remove
-                  </button>
-                </div>
-              );
-            })}
+                    <div className="h-20 w-20 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                      {image ? (
+                        <img src={image} alt={name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">No image</div>
+                      )}
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold text-slate-900">{name}</div>
+                      {variant && <div className="text-xs text-slate-500">{variant}</div>}
+                      <div className="mt-2 text-sm text-slate-500">${Number(price).toFixed(2)} each</div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-1">
+                        <button
+                          type="button"
+                          onClick={() => handleQtyChange(item, item.qty - 1)}
+                          className="h-8 w-8 rounded-full text-slate-700 hover:bg-slate-100"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center text-sm font-semibold text-slate-800">{item.qty}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleQtyChange(item, item.qty + 1)}
+                          className="h-8 w-8 rounded-full text-slate-700 hover:bg-slate-100"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="text-sm font-semibold text-slate-900">
+                      ${(Number(price) * item.qty).toFixed(2)}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemove(item)}
+                      disabled={isRemoving || isUpdating}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:border-slate-300"
+                      aria-label="Remove item"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="h-fit rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-semibold text-slate-900">Order summary</div>
-            <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
-              <span>Subtotal</span>
-              <span className="font-semibold text-slate-900">${subtotal.toFixed(2)}</span>
+          <div className="h-fit rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
+            <div className="text-sm font-semibold text-slate-900">Order Summary</div>
+            <div className="mt-4 space-y-3 text-sm text-slate-600">
+              <div className="flex items-center justify-between">
+                <span>Subtotal</span>
+                <span className="font-semibold text-slate-900">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Shipping</span>
+                <span className="font-semibold text-slate-900">${shipping.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Discount</span>
+                <span className="font-semibold text-slate-900">-${discount.toFixed(2)}</span>
+              </div>
+              <div className="h-px bg-slate-200" />
+              <div className="flex items-center justify-between text-base">
+                <span className="font-semibold text-slate-900">Total</span>
+                <span className="font-semibold text-slate-900">${total.toFixed(2)}</span>
+              </div>
             </div>
-            <button
-              type="button"
-              className="mt-6 w-full rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm"
+
+            <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs text-blue-700">
+              Free shipping over $50
+            </div>
+
+            <div className="mt-4 flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Coupon code"
+                className="flex-1 rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700"
+              />
+              <button className="rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-700 hover:border-blue-300">
+                Apply
+              </button>
+            </div>
+
+            <Link
+              to="/checkout"
+              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
             >
-              Checkout (coming soon)
-            </button>
+              Proceed to Checkout
+            </Link>
           </div>
         </div>
       )}
